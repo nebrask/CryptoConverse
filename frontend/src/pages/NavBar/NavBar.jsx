@@ -25,7 +25,7 @@ const NavBar = () => {
                 <SheetContent side="left" className="w-72">
                     <SheetHeader>
                         <SheetTitle>
-                            <div className='text-xl flex items-center justify-center' style={{ paddingTop: '20px' }}>
+                            <div className='text-xl flex items-center justify-center pt-6'>
                                 <Avatar className='mr-2'>
                                     <AvatarImage src={icon} alt="Icon"/>
                                 </Avatar>
