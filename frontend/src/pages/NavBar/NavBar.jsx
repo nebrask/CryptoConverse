@@ -14,7 +14,7 @@ import SideBar from './SideBar'
 
 const NavBar = () => {
   return (
-    <div className='fixed top-0 left-0 right-0 px-2 py-3 border-b z-50 bg-background bg-opacity-0 flex items-center justify-between'>
+    <div className='relative px-2 py-3 border-b z-50 bg-background bg-opacity-0 flex items-center justify-between'>
         <div className='flex items-center gap-2'>
             <Sheet>
                 <SheetTrigger>
