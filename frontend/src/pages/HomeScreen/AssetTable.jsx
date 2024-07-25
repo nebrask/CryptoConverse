@@ -1,8 +1,10 @@
-import React from 'react'
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
+import { useNavigate } from 'react-router-dom';
 
 const AssetTable = () => {
+  const navigate=useNavigate();
+  
   return (
     <Table className="w-full">
       <TableHeader>
@@ -17,7 +19,7 @@ const AssetTable = () => {
       </TableHeader>
       <TableBody>
         {[1,1,1,1,1,1,1,1,1,1].map((item, index)=> <TableRow key={index}>
-          <TableCell className="flex items-center gap-2 w-1/6">
+          <TableCell onClick={()=>navigate('/market/bitcoin/')} className="flex items-center gap-2 w-1/6">
             <Avatar>
               <AvatarImage src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Bitcoin.svg/1200px-Bitcoin.svg.png" alt="Bitcoin" />
             </Avatar>
