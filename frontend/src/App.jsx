@@ -10,10 +10,13 @@ import Watchlist from './pages/WatchlistScreen/Watchlist';
 import Profile from './pages/ProfileScreen/Profile';
 import CryptoDetails from './pages/CryptoDetails/CryptoDetails';
 import SearchCoin from './pages/SearchScreen/SearchCoin';
+import Auth from './pages/AuthScreen/Auth';
 
 function App() {
   return (
     <>
+    <Auth/>
+    {false && <div>
       <NavBar/>
       <Routes>
         <Route path="/" element={<Home/>}/>
@@ -27,6 +30,7 @@ function App() {
         <Route path="/market/:id" element={<CryptoDetails/>}/>
         <Route path="/search" element={<SearchCoin/>}/>
       </Routes>
+    </div>}
     </>
   );
 }
