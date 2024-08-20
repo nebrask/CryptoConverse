@@ -2,7 +2,6 @@ package com.cryptoconverse.service;
 
 import com.cryptoconverse.config.JWTProvider;
 import com.cryptoconverse.domain.VerificationType;
-import com.cryptoconverse.modal.OTPDetails;
 import com.cryptoconverse.modal.TwoFactorAuthentication;
 import com.cryptoconverse.modal.User;
 import com.cryptoconverse.repository.UserRepository;
@@ -12,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Optional;
 
 @RestController
-public class UserImplementService implements UserService{
+public class UserServiceImpl implements UserService{
     @Autowired
     private UserRepository userRepository;
 

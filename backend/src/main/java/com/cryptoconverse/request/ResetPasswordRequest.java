@@ -1,0 +1,9 @@
+package com.cryptoconverse.request;
+
+import lombok.Data;
+
+@Data
+public class ResetPasswordRequest {
+    private String otp;
+    private String password;
+}

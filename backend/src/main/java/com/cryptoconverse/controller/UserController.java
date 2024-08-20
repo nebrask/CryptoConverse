@@ -1,16 +1,24 @@
 package com.cryptoconverse.controller;
 
+import com.cryptoconverse.request.ForgotPasswordRequest;
 import com.cryptoconverse.domain.VerificationType;
+import com.cryptoconverse.modal.ForgotPassword;
 import com.cryptoconverse.modal.User;
 import com.cryptoconverse.modal.VerificationToken;
+import com.cryptoconverse.request.ResetPasswordRequest;
+import com.cryptoconverse.response.APIResponse;
+import com.cryptoconverse.response.AuthenticationResponse;
 import com.cryptoconverse.service.EmailService;
+import com.cryptoconverse.service.ForgotPasswordService;
 import com.cryptoconverse.service.UserService;
 import com.cryptoconverse.service.VerificationTokenService;
+import com.cryptoconverse.utils.OTPUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 public class UserController {
@@ -22,6 +30,9 @@ public class UserController {
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private ForgotPasswordService forgotPasswordService;
 
     @GetMapping("/api/users/profile")
     public ResponseEntity<User> getUserProfile(@RequestHeader("Authorization") String jwt) throws Exception {
@@ -67,5 +78,53 @@ public class UserController {
         }
 
         throw new Exception("Invalid OTP");
+    }
+
+
+    // sending otp for forgot password
+    @PostMapping("/auth/users/reset-password/send-otp")
+    public ResponseEntity<AuthenticationResponse> sendForgotPassword(@RequestBody ForgotPasswordRequest request) throws Exception {
+        User user = userService.findUserByEmail(request.getSendTo());
+        String otp = OTPUtils.generateOTP();
+        UUID uuid = UUID.randomUUID();
+        String id = uuid.toString();
+
+        ForgotPassword token = forgotPasswordService.findByUser(user.getId());
+
+        if (token == null) {
+            token = forgotPasswordService.createToken(user, id, otp, request.getVerificationType(), request.getSendTo());
+        }
+
+        if (request.getVerificationType().equals(VerificationType.EMAIL)) {
+            emailService.emailOTPVerification(user.getEmail(), token.getOtp());
+        }
+
+        AuthenticationResponse response = new AuthenticationResponse();
+        response.setSession(token.getId());
+        response.setMessage("Password reset OTP was sent successfuly");
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    // create endpoint for verifying otp, once user gets email of otp then he will provide the otp and hits the
+    // endpoint below. If otp is correct then give the message of password being successful, else will throw the
+    // exception below.
+    @PatchMapping("/auth/users/reset-password/verify-otp")
+    public ResponseEntity<APIResponse> resetPassword(@RequestParam String id, @RequestBody ResetPasswordRequest request, @RequestHeader("Authorization") String jwt) throws Exception {
+
+        ForgotPassword forgotPassword = forgotPasswordService.findById(id);
+
+        boolean isVerified = forgotPassword.getOtp().equals(request.getOtp());
+
+        if(isVerified) {
+            userService.updateUserPassword(forgotPassword.getUser(), request.getPassword());
+            APIResponse response = new APIResponse();
+            response.setMessage("Password was updated successfully");
+            return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
+        }
+
+        throw new Exception("Wrong OTP was given");
+
+
     }
 }

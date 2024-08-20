@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class OTPImplementService implements OTPService{
+public class OTPServiceImpl implements OTPService{
 
     @Autowired
     private OTPRepository otpRepository;
